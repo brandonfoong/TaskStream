@@ -8,6 +8,8 @@ import se.edu.inclass.task.TaskNameComparator;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 public class Main {
 
     private TaskNameComparator taskNameComparator;
@@ -17,7 +19,7 @@ public class Main {
         ArrayList<Task> tasksData = dm.loadData();
 
         System.out.println("Printing deadlines");
-        printDeadlines(tasksData);
+        printDeadlinesWithStreams(tasksData);
 
         System.out.println("Total number of deadlines: " + countDeadlines(tasksData));
 
@@ -45,5 +47,21 @@ public class Main {
                 System.out.println(t);
             }
         }
+    }
+
+    public static void printDeadlinesWithStreams(ArrayList<Task> tasksData) {
+        /*
+         * Java will inter the data types of the parameters for a lambda function
+         */
+        tasksData.stream()
+                .filter((task) -> task instanceof Deadline)
+                .sorted((t1, t2) -> t1.getDescription().toLowerCase().compareTo(t2.getDescription().toLowerCase()))
+                .forEach(System.out::println);
+    }
+
+    public static void filterTasksByString(ArrayList<Task> tasksData, String filterString) {
+        ArrayList<Task> filteredTasks = (ArrayList<Task>) tasksData.stream()
+                .filter((task) -> task.getDescription().contains(filterString))
+                .collect(toList());
     }
 }
